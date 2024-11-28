@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Markdown Viewer & Editor</title>
     <!-- GitHub Markdown CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
@@ -15,11 +15,11 @@
             height: 100vh;
             overflow: auto;
             display: flex;
-            background: #f9fafb;
+            background: #F0F0F0;
         }
 
         .markdown-body {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 20px auto;
             padding: 20px;
             border: 1px solid #e1e4e8;
@@ -33,14 +33,15 @@
             width: 250px;
             position: fixed;
             height: 100%;
-            background: #1f2937;
-            color: #fff;
+            background: #fff;
+            color: #333;
             display: flex;
             flex-direction: column;
             padding: 20px;
             transition: transform 0.3s ease-in-out;
             z-index: 1000;
             transform: translateX(-100%);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar.open {
@@ -55,9 +56,9 @@
         }
 
         .sidebar button {
-            background: #374151;
-            border: none;
-            color: #fff;
+            background: #fff;
+            border: 1px solid;
+            color: #868585;
             padding: 10px;
             margin-bottom: 10px;
             cursor: pointer;
@@ -68,14 +69,19 @@
             align-items: center;
             gap: 10px;
             transition: background 0.3s ease;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar button:hover {
-            background: #4b5563;
+            background: #fff;
+            border-color: #24CB71;
+            color: #24CB71;
         }
 
         .sidebar button.active {
-            background: #2563eb;
+            color: #24CB71;
+            border-color: #24CB71; 
+            background: #fff;
         }
 
         .toggle-btn {
@@ -83,7 +89,7 @@
             bottom: 30px;
             left: 30px;
             z-index: 1100;
-            background: #2563eb;
+            background: #24CB71;
             color: white;
             border-radius: 50%;
             width: 50px;
@@ -97,7 +103,7 @@
         }
 
         .toggle-btn:hover {
-            background: #1d4ed8;
+            background: #1ee47a;
         }
 
         .main-content {
@@ -144,7 +150,8 @@
         }
 
         .upload-section:hover {
-            background: #f3f4f6;
+            background: #d8f8e7;
+            border-color: #1ee47a;
         }
 
         .editor-container {
@@ -167,7 +174,7 @@
 
         /* New CSS for the Download button */
         #downloadBtn {
-            background: #2563eb;
+            background: #24CB71;
             border: none;
             color: white;
             padding: 10px 20px;
@@ -178,7 +185,7 @@
         }
 
         #downloadBtn:hover {
-            background: #1d4ed8;
+            background: #874FFF;
         }
 
         /* Fixing textarea overflow issue */
@@ -197,6 +204,10 @@
             line-height: 1;
         }
 
+        .editor:focus{
+            outline: none;
+            border-color: #24CB71;
+        }
 
         /* Media Queries for responsiveness */
         @media (max-width: 768px) {
@@ -241,10 +252,10 @@
 <body>
     <div class="toggle-btn" id="toggleSidebar">☰</div>
     <div class="sidebar">
-        <h2>Markdown Tools</h2>
+        <h2 style="color: #24CB71;">Markdown Tools</h2>
         <button id="homeBtn" class="active">Home</button>
-        <button id="uploadBtn">View Markdown</button>
-        <button id="editorBtn">Review Markdown</button>
+        <button id="uploadBtn">Markdown Viewer</button>
+        <button id="editorBtn">Markdown Editor</button>
     </div>
 
     <div id="homeSection" class="main-content active">
@@ -252,7 +263,7 @@
         <p>Select an option from the sidebar to get started.</p>
     </div>
     <div id="uploadSection" class="main-content">
-        <h2>View Markdown</h2>
+        <h2>Markdown Viewer</h2>
         <div class="upload-section" id="dropArea">
             Drag and drop a Markdown file, or click to select one.
             <input type="file" id="fileInput" style="display: none;">
