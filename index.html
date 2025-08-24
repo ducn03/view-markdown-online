@@ -4,358 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Markdown Viewer & Editor</title>
-    <!-- GitHub Markdown CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
-    <!-- Highlight.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: auto;
-            display: flex;
-            background: #F0F0F0;
-        }
-
-        .markdown-body {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #e1e4e8;
-            border-radius: 10px;
-            background: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            line-height: 1.6;
-        }
-
-        .sidebar {
-            width: 250px;
-            position: fixed;
-            height: 100%;
-            background: #fff;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-            transform: translateX(-100%);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar.open {
-            transform: translateX(0);
-        }
-
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .sidebar button {
-            background: #fff;
-            border: 1px solid;
-            color: #868585;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            text-align: left;
-            font-size: 1rem;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.3s ease;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar button:hover {
-            background: #fff;
-            border-color: #24CB71;
-            color: #24CB71;
-        }
-
-        .sidebar button.active {
-            color: #24CB71;
-            border-color: #24CB71; 
-            background: #fff;
-        }
-
-        .toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 1100;
-            background: #24CB71;
-            color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease;
-        }
-
-        .toggle-btn:hover {
-            background: #1ee47a;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            margin-left: 0;
-            transition: margin-left 0.3s ease;
-            display: none;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.5s ease forwards;
-            max-width: 100%;
-        }
-
-        .main-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .upload-section {
-            margin-left: auto;
-            margin-right: auto;
-            padding: 30px;
-            border: 2px dashed #e5e7eb;
-            text-align: center;
-            background: #ffffff;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            max-width: 50%;
-            height: auto;
-        }
-
-        .upload-section:hover {
-            background: #d8f8e7;
-            border-color: #1ee47a;
-        }
-
-        .editor-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .editor,
-        .preview {
-            flex: 1;
-            height: 420px;
-            border: 1px solid #e5e7eb;
-            padding: 10px;
-            border-radius: 10px;
-            background: white;
-            overflow-y: auto;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* New CSS for the Download button */
-        #downloadBtn {
-            background: #24CB71;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        #downloadBtn:hover {
-            background: #874FFF;
-        }
-
-        /* Fixing textarea overflow issue */
-        .editor {
-            height: 400px;
-            overflow-y: auto; 
-            overflow-x: auto; 
-            white-space: nowrap; 
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #e1e4e8;
-            border-radius: 10px;
-            background: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            line-height: 1;
-        }
-
-        .editor:focus{
-            outline: none;
-            border-color: #24CB71;
-        }
-
-        /* Media Queries for responsiveness */
-        @media (max-width: 768px) {
-            .editor {
-                max-width: 150px; 
-                padding: 15px;
-            }
-            .editor,
-            .preview {
-                max-width: 150px; 
-                padding: 15px; 
-            }
-            .upload-section {
-                max-width: 100%;
-                height: auto;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .editor {
-                max-width: 150px;
-                height: 400px;
-                padding: 10px; 
-            }
-            .editor,
-            .preview {
-                max-width: 150px; 
-                padding: 15px; 
-                height: 400px;
-            }
-            .upload-section {
-                max-width: 100%;
-                height: auto;
-            }
-        }
-
+        body { margin:0; font-family:Arial, sans-serif; height:100vh; overflow:auto; display:flex; background:#F0F0F0; }
+        .markdown-body { max-width:1000px; margin:20px auto; padding:20px; border:1px solid #e1e4e8; border-radius:10px; background:#fff; box-shadow:0 4px 6px rgba(0,0,0,0.1); line-height:1.6; }
+        .sidebar { width:250px; position:fixed; height:100%; background:#fff; color:#333; display:flex; flex-direction:column; padding:20px; transition:transform 0.3s ease-in-out; z-index:1000; transform:translateX(-100%); box-shadow:0 4px 6px rgba(0,0,0,0.1); }
+        .sidebar.open { transform:translateX(0); }
+        .sidebar h2 { text-align:center; margin-bottom:20px; font-size:1.5rem; font-weight:bold; }
+        .sidebar button { background:#fff; border:1px solid; color:#868585; padding:10px; margin-bottom:10px; cursor:pointer; text-align:left; font-size:1rem; border-radius:5px; display:flex; align-items:center; gap:10px; transition:background 0.3s ease; box-shadow:0 2px 2px rgba(0,0,0,0.1); }
+        .sidebar button:hover { background:#fff; border-color:#24CB71; color:#24CB71; }
+        .sidebar button.active { color:#24CB71; border-color:#24CB71; background:#fff; }
+        .toggle-btn { position:fixed; bottom:30px; left:30px; z-index:1100; background:#24CB71; color:white; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:background 0.3s ease; }
+        .toggle-btn:hover { background:#1ee47a; }
+        .main-content { flex:1; padding:20px; margin-left:0; transition:margin-left 0.3s ease; display:none; opacity:0; transform:translateY(10px); animation:fadeIn 0.5s ease forwards; max-width:100%; }
+        .main-content.active { display:block; opacity:1; transform:translateY(0); }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .upload-section { margin:auto; padding:30px; border:2px dashed #e5e7eb; text-align:center; background:#fff; border-radius:10px; cursor:pointer; transition:background 0.3s ease; max-width:50%; }
+        .upload-section:hover { background:#d8f8e7; border-color:#1ee47a; }
+        .editor-container { display:flex; gap:20px; margin-top:20px; }
+        .editor,.preview { flex:1; height:420px; border:1px solid #e5e7eb; padding:10px; border-radius:10px; background:white; overflow-y:auto; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
+        #downloadBtn,#saveBtnViewer,#saveBtnEditor { background:#24CB71; border:none; color:white; padding:10px 20px; border-radius:5px; font-size:1rem; cursor:pointer; transition:background 0.3s ease; margin-right:10px; }
+        #downloadBtn:hover,#saveBtnViewer:hover,#saveBtnEditor:hover { background:#874FFF; }
+        .editor { white-space:nowrap; max-width:900px; margin:20px auto; line-height:1; }
+        .editor:focus{ outline:none; border-color:#24CB71; }
+        .toast { position:fixed; top:20px; right:20px; background:#24CB71; color:white; padding:10px 20px; border-radius:5px; opacity:0; transition:opacity 0.5s ease; z-index:2000; }
+        .toast.show { opacity:1; }
+        .card-container { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
+        .card { background:#fff; border:1px solid #e1e4e8; border-radius:10px; padding:15px; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; flex-direction:column; justify-content:space-between; }
+        .card h3 { margin:0 0 10px; font-size:1.1rem; color:#24CB71; cursor:pointer; }
+        .card p { font-size:0.9rem; color:#666; }
+        .card button { margin-top:10px; background:#ff4d4f; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; }
+        .card button:hover { background:#d9363e; }
     </style>
-    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 </head>
 <body>
     <div class="toggle-btn" id="toggleSidebar">☰</div>
     <div class="sidebar">
-        <h2 style="color: #24CB71;">Markdown Tools</h2>
+        <h2 style="color:#24CB71;">Markdown Tools</h2>
         <button id="homeBtn" class="active">Home</button>
         <button id="uploadBtn">Markdown Viewer</button>
         <button id="editorBtn">Markdown Editor</button>
+        <button id="savedBtn">Saved</button>
     </div>
 
     <div id="homeSection" class="main-content active">
         <h1>Welcome to Markdown Tools</h1>
         <p>Select an option from the sidebar to get started.</p>
     </div>
+
     <div id="uploadSection" class="main-content">
         <h2>Markdown Viewer</h2>
-        <div class="upload-section" id="dropArea">
-            Drag and drop a Markdown file, or click to select one.
-            <input type="file" id="fileInput" style="display: none;">
-        </div>
-        <div id="content" class="markdown-body" style="margin-top: 20px;"></div>
+        <button id="saveBtnViewer" style="display:none; margin-bottom:20px;">Save</button>
+        <div class="upload-section" id="dropArea">Drag and drop a Markdown file, or click to select one.<input type="file" id="fileInput" style="display:none;"></div>
+        <div id="content" class="markdown-body" style="margin-top:20px; display:none;"></div>
     </div>
+
     <div id="editorSection" class="main-content">
         <h2>Markdown Editor</h2>
+        <div style="margin-bottom:20px;">
+            <button id="saveBtnEditor">Save</button>
+            <button id="downloadBtn">Download Markdown</button>
+        </div>
         <div class="editor-container">
             <textarea id="editor" class="editor" placeholder="Type Markdown here..."></textarea>
             <div id="preview" class="preview markdown-body"></div>
         </div>
-        <button id="downloadBtn" style="margin-top: 20px;">Download Markdown</button>
     </div>
 
+    <div id="savedSection" class="main-content">
+        <h2>Saved Files</h2>
+        <div class="card-container" id="savedList"></div>
+        <div id="savedPreview" class="markdown-body" style="margin-top:20px; display:none;"></div>
+    </div>
+
+    <div class="toast" id="toast">You have saved the markdown file !</div>
+
     <script>
-        // Sidebar toggle
-        const toggleSidebar = document.getElementById('toggleSidebar');
-        const sidebar = document.querySelector('.sidebar');
-        toggleSidebar.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-        });
+        const toggleSidebar=document.getElementById('toggleSidebar');
+        const sidebar=document.querySelector('.sidebar');
+        toggleSidebar.addEventListener('click',()=>sidebar.classList.toggle('open'));
 
-        // Navigation
-        const buttons = document.querySelectorAll('.sidebar button');
-        const sections = document.querySelectorAll('.main-content');
-
-        buttons.forEach((btn, idx) => {
-            btn.addEventListener('click', () => {
-                buttons.forEach((button) => button.classList.remove('active'));
-                sections.forEach((section) => section.classList.remove('active'));
+        const buttons=document.querySelectorAll('.sidebar button');
+        const sections=document.querySelectorAll('.main-content');
+        buttons.forEach((btn,idx)=>{
+            btn.addEventListener('click',()=>{
+                buttons.forEach(b=>b.classList.remove('active'));
+                sections.forEach(s=>s.classList.remove('active'));
                 btn.classList.add('active');
                 sections[idx].classList.add('active');
-
-                // Close sidebar after clicking an option
                 sidebar.classList.remove('open');
+                if(btn.id==='savedBtn') renderSaved();
             });
         });
 
-        // File upload and preview
-        const dropArea = document.getElementById('dropArea');
-        const fileInput = document.getElementById('fileInput');
-        const content = document.getElementById('content');
+        const dropArea=document.getElementById('dropArea');
+        const fileInput=document.getElementById('fileInput');
+        const content=document.getElementById('content');
+        const saveBtnViewer=document.getElementById('saveBtnViewer');
+        dropArea.addEventListener('click',()=>fileInput.click());
+        fileInput.addEventListener('change',handleFileSelect);
+        dropArea.addEventListener('dragover',(e)=>e.preventDefault());
+        dropArea.addEventListener('drop',handleFileDrop);
 
-        // Ẩn phần content ban đầu
-        content.style.display = 'none';
+        function handleFileSelect(e){ const file=e.target.files[0]; if(file) readFile(file); }
+        function handleFileDrop(e){ e.preventDefault(); const file=e.dataTransfer.files[0]; if(file) readFile(file); }
 
-        dropArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', handleFileSelect);
-        dropArea.addEventListener('dragover', (e) => e.preventDefault());
-        dropArea.addEventListener('drop', handleFileDrop);
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) readFile(file);
-        }
-
-        function handleFileDrop(event) {
-            event.preventDefault();
-            const file = event.dataTransfer.files[0];
-            if (file) readFile(file);
-        }
-
-        function readFile(file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                // Hiển thị phần content khi có file
-                content.style.display = 'block';
-                content.innerHTML = marked.parse(reader.result);
+        function readFile(file){
+            const reader=new FileReader();
+            reader.onload=()=>{
+                content.style.display='block';
+                saveBtnViewer.style.display='inline-block';
+                content.innerHTML=marked.parse(reader.result);
                 hljs.highlightAll();
+                saveToList({type:'viewer',title:file.name,content:reader.result});
             };
             reader.readAsText(file);
         }
 
-        // Markdown editor and preview
-        const editor = document.getElementById('editor');
-        const preview = document.getElementById('preview');
+        saveBtnViewer.addEventListener('click',()=>{
+            const raw=content.innerText;
+            saveToList({type:'viewer',title:'Viewer Saved',content:raw});
+            showToast();
+        });
 
-        editor.addEventListener('input', () => {
-            preview.innerHTML = marked.parse(editor.value);
+        const editor=document.getElementById('editor');
+        const preview=document.getElementById('preview');
+        const saveBtnEditor=document.getElementById('saveBtnEditor');
+
+        editor.addEventListener('input',()=>{
+            preview.innerHTML=marked.parse(editor.value);
             hljs.highlightAll();
         });
 
-        // Download Markdown file
-        const downloadBtn = document.getElementById('downloadBtn');
-        downloadBtn.addEventListener('click', () => {
-            const blob = new Blob([editor.value], { type: 'text/markdown' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'markdown.md';
+        saveBtnEditor.addEventListener('click',()=>{
+            saveToList({type:'editor',title:'Editor Draft',content:editor.value});
+            showToast();
+        });
+
+        const downloadBtn=document.getElementById('downloadBtn');
+        downloadBtn.addEventListener('click',()=>{
+            const blob=new Blob([editor.value],{type:'text/markdown'});
+            const link=document.createElement('a');
+            link.href=URL.createObjectURL(blob);
+            link.download='markdown.md';
             link.click();
         });
+
+        function saveToList(item){
+            const list=JSON.parse(localStorage.getItem('savedList')||'[]');
+            item.id=Date.now();
+            item.createdAt=new Date().toLocaleString();
+            list.push(item);
+            localStorage.setItem('savedList',JSON.stringify(list));
+        }
+
+        function renderSaved(){
+            const savedList=document.getElementById('savedList');
+            const savedPreview=document.getElementById('savedPreview');
+            savedList.innerHTML='';
+            savedPreview.style.display='none';
+            const list=JSON.parse(localStorage.getItem('savedList')||'[]');
+            list.forEach(item=>{
+                const card=document.createElement('div');
+                card.className='card';
+                card.innerHTML=`<h3>${item.title}</h3><p>${item.createdAt}</p>`;
+                const delBtn=document.createElement('button');
+                delBtn.textContent='Delete';
+                delBtn.addEventListener('click',()=>{
+                    deleteSaved(item.id);
+                    renderSaved();
+                });
+                card.querySelector('h3').addEventListener('click',()=>{
+                    savedPreview.style.display='block';
+                    savedPreview.innerHTML=marked.parse(item.content);
+                    hljs.highlightAll();
+                });
+                card.appendChild(delBtn);
+                savedList.appendChild(card);
+            });
+        }
+
+        function deleteSaved(id){
+            let list=JSON.parse(localStorage.getItem('savedList')||'[]');
+            list=list.filter(item=>item.id!==id);
+            localStorage.setItem('savedList',JSON.stringify(list));
+        }
+
+        function showToast(){
+            const toast=document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(()=>toast.classList.remove('show'),2000);
+        }
     </script>
 </body>
 </html>
